@@ -20,11 +20,9 @@ export class TokenUtils {
             expiresIn: '7d',
         });
 
-        const verifyToken = this.jwtService.verifyAsync(access_token, {
+        const verifyToken = this.jwtService.verify(access_token, {
             algorithms: ["RS256"], publicKey: publicKey
         })
-            .then(data => data)
-            .catch(err => err);
 
         if (!verifyToken) {
             return { message: 'Error verify token!' }

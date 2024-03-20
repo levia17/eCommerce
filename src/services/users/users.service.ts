@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException, UseFilters } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { CreateUserParam, DeleteUserParam, UpdateUserParam } from "src/type/user.type";
 import { User } from "src/typeorm/entities/user.entity";
@@ -15,16 +15,11 @@ export class UsersService {
     }
 
     async getUser(username: string) {
-        const user = await this.userRepository.findOneBy({ username })
-            .then(data => data ? data : undefined)
-            .catch(err => {
-                console.log(err);
-                return {
-                    message: 'Error get user!'
-                };
-            });
+        const user = await this.userRepository.findOneBy({ username });
+        // console.log(user);
         return user;
     }
+
 
     async createUser(userDetails: CreateUserParam) {
         const newUser = await this.userRepository.create({ ...userDetails, createAt: new Date() })

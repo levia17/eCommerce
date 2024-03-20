@@ -1,5 +1,6 @@
 import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
+import { NotFoundRequest } from "src/helper/response/error.interface";
 import { DeleteUserDto, LoginUserDto, SignUpUserDto, UpdateUserDto } from "src/dtos/user.dto";
 import { AuthService } from "src/services/auth/auth.service";
 import { UsersService } from "src/services/users/users.service";
@@ -13,8 +14,14 @@ export class UsersController {
     ) { }
 
     @Get('/:username')
-    getUser(@Param('username') username: string) {
-        return this.usersService.getUser(username);
+    async getUser(@Param('username') username: string) {
+        const user = await this.usersService.getUser(username)
+
+        if (!user) {
+            throw new NotFoundRequest('Not found user!');
+        }
+
+        return user;
     }
 
     @Get('/')

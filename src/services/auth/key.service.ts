@@ -18,7 +18,7 @@ export class KeyService {
             },
         });
 
-        console.log(publicKey, privateKey);
+        // console.log(publicKey, privateKey);
         
 
         return { publicKey, privateKey };
