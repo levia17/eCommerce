@@ -3,7 +3,7 @@ import { configApi } from "./config.swagger";
 
 function ApiSwagger(app) {
     const document = SwaggerModule.createDocument(app, configApi)
-    SwaggerModule.setup('v1/api', app, document);
+    SwaggerModule.setup('apiSwagger', app, document);
 }
 
 export { ApiSwagger }

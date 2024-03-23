@@ -1,15 +1,12 @@
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
-import { ErrorResponse } from 'src/helper/response/error.interface';
 
-@Catch(ErrorResponse)
+@Catch(HttpException)
 export class ErrorResponseFilter implements ExceptionFilter {
-    catch(exception: ErrorResponse, host: ArgumentsHost) {
-        console.log('hi!');
-
+    catch(exception: HttpException, host: ArgumentsHost) {
         const ctx = host.switchToHttp();
         const response = ctx.getResponse();
         const request = ctx.getRequest();
-        const status = exception.status;
+        const status = exception.getStatus();
 
         response
             .status(status)

@@ -5,16 +5,18 @@ import { UsersService } from "src/services/users/users.service";
 import { User } from "src/typeorm/entities/user.entity";
 import { Repository } from "typeorm";
 import { AuthModule } from "./auth.module";
-import { APP_FILTER } from "@nestjs/core";
+import { ApiKeyService } from "src/services/apiKey/apiKey.service";
+import { ApiKeyModule } from "./apiKey.module";
 
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([User]),
         forwardRef(() => AuthModule),
+        ApiKeyModule
     ],
     controllers: [UsersController],
-    providers: [UsersService, Repository],
+    providers: [UsersService, Repository, ApiKeyService],
     exports: [TypeOrmModule, Repository, UsersService]
 })
 
