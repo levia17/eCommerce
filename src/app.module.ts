@@ -10,6 +10,8 @@ import { JwtModule } from '@nestjs/jwt';
 import { KeyStore } from './typeorm/entities/key.entites';
 import { ApiKey } from './typeorm/entities/apiKey.entites';
 import { ApiKeyModule } from './modules/apiKey.module';
+import { TokenStore } from './typeorm/entities/token.entity';
+import { TokensModule } from './modules/tokens.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -19,9 +21,9 @@ import { ApiKeyModule } from './modules/apiKey.module';
     username: 'root',
     password: 'Toilatranhoangnhu1997',
     database: 'ecommerce',
-    entities: [User, KeyStore, ApiKey],
+    entities: [User, KeyStore, ApiKey, TokenStore],
     synchronize: true,
-  }), UsersModule, AuthModule, ApiKeyModule,
+  }), UsersModule, AuthModule, ApiKeyModule, TokensModule,
   JwtModule.register({
     global: true,
   })

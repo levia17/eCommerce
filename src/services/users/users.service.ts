@@ -14,13 +14,18 @@ export class UsersService {
         return this.userRepository.find();
     }
 
-    async getUser(username: string) {
+    getUser(username: string) {
+
+
         return this.userRepository.findOneBy({ username });
     }
 
 
     async createUser(userDetails: CreateUserParam) {
-        const newUser = await this.userRepository.create({ ...userDetails, createAt: new Date() })
+        const newUser = await this.userRepository.create({
+            ...userDetails,
+            createdAt: new Date()
+        })
         return this.userRepository.save(newUser);
     }
 

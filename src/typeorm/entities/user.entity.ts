@@ -19,5 +19,5 @@ export class User {
     email: string;
 
     @Column()
-    createAt: Date;
+    createdAt: Date;
 }

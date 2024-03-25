@@ -4,6 +4,7 @@ import { DeleteUserDto, LoginUserDto, SignUpUserDto, UpdateUserDto } from "src/d
 import { AuthService } from "../services/auth/auth.service";
 import { UsersService } from "src/services/users/users.service";
 import { ApiKeyCheck } from "src/decorators/apiKey.decorator";
+import { refreshTokenDto } from "src/dtos/token.dto";
 
 @ApiTags('Users')
 @Controller('/users')

@@ -7,13 +7,15 @@ import { Repository } from "typeorm";
 import { AuthModule } from "./auth.module";
 import { ApiKeyService } from "src/services/apiKey/apiKey.service";
 import { ApiKeyModule } from "./apiKey.module";
+import { TokensModule } from "./tokens.module";
 
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([User]),
         forwardRef(() => AuthModule),
-        ApiKeyModule
+        ApiKeyModule,
+        TokensModule
     ],
     controllers: [UsersController],
     providers: [UsersService, Repository, ApiKeyService],

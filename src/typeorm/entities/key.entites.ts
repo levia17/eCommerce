@@ -1,5 +1,4 @@
-import { MaxLength } from "class-validator";
-import { Column, Entity, MaxKey, PrimaryColumn } from "typeorm";
+import { Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity()
 export class KeyStore {
@@ -7,7 +6,7 @@ export class KeyStore {
     username: string;
 
     @Column({
-        length: 2048
+        length: 5000
     })
     publicKey: string;
 
