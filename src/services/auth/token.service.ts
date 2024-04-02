@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { TokenParam } from "src/type/token.type";
@@ -44,8 +44,11 @@ export class TokenService {
             .then(data => data)
             .catch(err => err);
 
-        const verify = await this.jwtService.verify(refresh_token, { publicKey: keys.publicKey });
-        if (!verify) throw new UnauthorizedException('Invalid!');
+        const verify = await this.jwtService.verify(refresh_token, { publicKey: keys.publicKey })
+
+        if (!verify) {
+            throw new UnauthorizedException('Invalid!');
+        }
 
         const refreshTokenCheck = await this.tokenUtils.findByRefreshTokenUsed(username, refresh_token)
             .then(data => {
@@ -60,7 +63,11 @@ export class TokenService {
 
         // console.log('Check refresh token used!', refreshTokenCheck);
 
-        if (refreshTokenCheck) throw new BadRequestException('Invalid refresh token! 2');
+        if (refreshTokenCheck) {
+            // this.tokenUtils.removeTokenPair(username);
+
+            throw new BadRequestException('Relogin, please!');
+        };
 
         const holderToken = this.tokenUtils.findByRefreshToken(username, refresh_token);
 
@@ -87,10 +94,20 @@ export class TokenService {
         return this.tokenUtils.addToRefreshTokenUsed(username, refresh_token);
     }
 
+
+    // Find a token pair by username
     findByUsername(username: string) {
-        return this.tokenUtils.findByUsername(username);
+        return this.tokenUtils.findByUsername(username)
+
     }
 
+    // Remove token in any field
+
+    /*
+    * @param payload 
+    * fields: [access_token, refresh_token, refreshTokenUsed]
+    * token: '--- Token created via asymmetric algorithm by server (RSA 256)----' 
+    */
 
     removeTokensByUsername(username: string, payload: payloadRemoveToken) {
         const { fields, token } = getFields(['fields', 'token'], payload)
@@ -98,4 +115,37 @@ export class TokenService {
 
         return this.tokenUtils.removeTokensByUsername(username, token, fields);
     }
+
+
+
+    removeTokenPairByUsername(username: string) {
+        return this.tokenUtils.removeTokenPairByUsername(username);
+    }
+
+
+
+    async verifyAccessToken(access_token: string) {
+
+        const decodedToken = this.jwtService.decode(access_token);
+        if (!decodedToken) throw new BadRequestException("Invalid! T1");
+
+
+        /*Check if user has token*/
+        const holder = await this.tokenStoreRepository.findOneBy({ username: decodedToken.username, access_token: access_token })
+            .then(data => data)
+            .catch(err => err);
+        if (!holder) throw new BadRequestException("Invalid! T");
+
+
+        /*Find key pair*/
+        const keys = await this.keyService.findKeyByUsername(decodedToken.username)
+            .then(data => data)
+            .catch(err => err);
+
+        const verify = this.jwtService.verify(access_token, { publicKey: keys.publicKey });
+        if (!verify) throw new BadRequestException("Invalid! T2");
+
+        return verify;
+    }
+
 }

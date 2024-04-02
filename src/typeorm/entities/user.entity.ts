@@ -18,6 +18,9 @@ export class User {
     @IsEmail()
     email: string;
 
+    @Column({ type: "json" })
+    own_store: string[];
+
     @Column()
     createdAt: Date;
 }

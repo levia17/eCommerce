@@ -9,3 +9,15 @@
 - Invalid!: Not successfully verify tokens!
 
 - Error RT: there are tokens similar in database!
+
+#Verify access_token
+
+- Invalid! T1: Decode failed!
+
+- Invalid! T2: Verify failed!
+
+- Invalid! T: User not hold that token!
+
+#Validator
+
+- Invalid! V: Failed validate!

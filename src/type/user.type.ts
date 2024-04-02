@@ -10,8 +10,8 @@ export type LoginUserParam = {
 }
 
 export type UpdateUserParam = {
-    password: string,
-    email: string,
+    password?: string,
+    email?: string,
 }
 
 export type DeleteUserParam = {

@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, NotFoundException, Param, Post } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AuthService } from "../services/auth/auth.service";
 
@@ -13,19 +13,23 @@ export class TokensController {
         private tokenService: TokenService,
     ) { }
 
-    @Get('/refreshToken/:username')
-    getByUsername(@Param('username') username:string){
-        return this.tokenService.findByUsername(username);
+    @Get('/:username')
+    async getByUsername(@Param('username') username: string) {
+        const tokens = await this.tokenService.findByUsername(username);
+        if (!tokens) {
+            throw new NotFoundException(`Cannot found user's token!`)
+        }
+        return tokens;
     }
 
 
-    @Post('/refreshToken/:username')
+    @Post('/:username')
     handleRefreshToken(@Param('username') username: string, @Body() refresh_token: refreshTokenDto) {
-        return this.tokenService.handleRefreshToken(username, refresh_token.refresh_token.toString())
+        return this.tokenService.handleRefreshToken(username, refresh_token.refresh_token.toString());
     }
 
-    @Delete('/refreshToken/:username')
-    removeTokensByUSername(@Param('username') username: string, @Body() payload: payloadRemoveToken){
+    @Delete('/:username')
+    removeTokensByUSername(@Param('username') username: string, @Body() payload: payloadRemoveToken) {
         return this.tokenService.removeTokensByUsername(username, payload)
     }
 }

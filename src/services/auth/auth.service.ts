@@ -1,6 +1,6 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, NotFoundException, UnauthorizedException } from "@nestjs/common";
 import { UsersService } from "../users/users.service";
-import { LoginUserDto, SignUpUserDto } from "src/dtos/user.dto";
+import { LoginUserDto, SignUpUserDto } from "../../dtos/user.dto";
 import { TokenService } from "./token.service";
 import { KeyService } from "./key.service";
 import { Repository } from "typeorm";
@@ -89,5 +89,19 @@ export class AuthService {
 
         await this.tokenStoreRepository.update(filter, tokens);
         return { message: "Login successfully!", tokens };
+    }
+
+    async Logout(username: string, access_token: string) {
+
+        const tokens = await this.tokenService.findByUsername(username)
+            .then(data => data ? data : null)
+            .catch(err => { throw new BadRequestException('Internal server error!') });
+
+        if (tokens.access_token !== access_token) {
+            throw new UnauthorizedException('Invalid token!')
+        }
+
+        return this.tokenService.removeTokenPairByUsername(username);
+
     }
 }

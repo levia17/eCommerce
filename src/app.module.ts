@@ -12,6 +12,8 @@ import { ApiKey } from './typeorm/entities/apiKey.entites';
 import { ApiKeyModule } from './modules/apiKey.module';
 import { TokenStore } from './typeorm/entities/token.entity';
 import { TokensModule } from './modules/tokens.module';
+import { ShopModule } from './modules/shop.module';
+import { Shop } from './typeorm/entities/shop.entites';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -21,9 +23,10 @@ import { TokensModule } from './modules/tokens.module';
     username: 'root',
     password: 'Toilatranhoangnhu1997',
     database: 'ecommerce',
-    entities: [User, KeyStore, ApiKey, TokenStore],
+    entities: [User, KeyStore, ApiKey, TokenStore, Shop],
     synchronize: true,
   }), UsersModule, AuthModule, ApiKeyModule, TokensModule,
+    ShopModule,
   JwtModule.register({
     global: true,
   })

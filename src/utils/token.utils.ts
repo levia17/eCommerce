@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 import { InjectRepository } from "@nestjs/typeorm";
 import { KeyStore } from "src/typeorm/entities/key.entites";
@@ -78,6 +78,15 @@ export class TokenUtils {
             })
             .where(`username = :username`, { username })
             .execute()
+    }
+
+    async removeTokenPairByUsername(username: string) {
+        return await this.tokenStoreRepository.update({ username: username }, {
+            access_token: null,
+            refresh_token: null
+        })
+            .then(data => { message: "Reset Successfully!" })
+            .catch(err => { throw new InternalServerErrorException() });
     }
 
     async removeTokensByUsername(username: string, tokenToRemove: string, field: string) {
